@@ -1,0 +1,133 @@
+<!-- dashboard.html: Modern Digital Twin -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVTwin Dashboard</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Google+Sans:wght@400;500;700&display=swap">
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+</head>
+<body>
+    <!-- Google Cloud-style Navbar -->
+    <div class="taskbar">
+      <div class="taskbar-left">
+        <span class="app-title">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 17L12 22L22 17" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 12L12 17L22 12" stroke="#1a73e8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            EVTwin Console
+        </span>
+      </div>
+      <div class="taskbar-center">
+        <div class="role-selector">
+          <label for="role-select">View as:</label>
+          <select id="role-select">
+            <option value="head">Head Engineer</option>
+            <option value="lead">Team Lead</option>
+            <option value="worker">Operator</option>
+          </select>
+        </div>
+        <div class="command-bar">
+          <input id="text-command" type="text" placeholder="Search resources, commands, and docs (/) " onkeydown="if(event.key==='Enter'){handleTextCommand();}">
+        </div>
+      </div>
+      <div class="taskbar-right">
+        <button class="logout-btn" onclick="logout()">Sign Out</button>
+      </div>
+    </div>
+    <!-- End Taskbar -->
+
+    <div class="dashboard-grid">
+        <!-- Machines Card -->
+        <div class="dashboard-card machines-card">
+            <div class="machine-horizontal-card">
+                <div class="machine-3d-preview clickable" onclick="openModelPopup('m1')">
+                    <model-viewer src="/static/models/m1.glb" alt="CNC Machine (M1)" camera-controls disable-zoom style="width:90px;height:90px;"></model-viewer>
+                </div>
+                <div class="machine-params">
+                    <div class="machine-title">
+                        CNC Machine (M1)
+                        <span id="m1-status-dot" class="status-dot"></span>
+                    </div>
+                    <div class="param"><span>Power</span><span id="m1-power">-- W</span></div>
+                    <div class="param"><span>Voltage</span><span id="m1-voltage">-- V</span></div>
+                    <div class="param"><span>Temp</span><span id="m1-temp">-- °C</span></div>
+                    <div class="machine-actions" id="m1-actions"></div>
+                </div>
+            </div>
+            <div class="machine-horizontal-card">
+                <div class="machine-3d-preview clickable" onclick="openModelPopup('m2')">
+                    <model-viewer src="/static/models/m2.glb" alt="CNC Machine (M2)" camera-controls disable-zoom style="width:90px;height:90px;"></model-viewer>
+                </div>
+                <div class="machine-params">
+                    <div class="machine-title">
+                        CNC Machine (M2)
+                        <span id="m2-status-dot" class="status-dot"></span>
+                    </div>
+                    <div class="param"><span>Power</span><span id="m2-power">-- W</span></div>
+                    <div class="param"><span>Voltage</span><span id="m2-voltage">-- V</span></div>
+                    <div class="param"><span>Temp</span><span id="m2-temp">-- °C</span></div>
+                    <div class="machine-actions" id="m2-actions"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Efficiency & Health Rings -->
+        <div class="dashboard-card efficiency-card">
+            <div class="efficiency-rings">
+                <div class="ring-metric">
+                    <canvas id="efficiencyRing" width="120" height="120"></canvas>
+                    <div class="ring-label">Efficiency</div>
+                </div>
+                <div class="ring-metric">
+                    <canvas id="healthRing" width="120" height="120"></canvas>
+                    <div class="ring-label">Health</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trends Chart -->
+        <div class="dashboard-card trends-card">
+            <div class="trends-title">Power Consumption</div>
+            <div style="position: relative; height: 200px; width: 100%;">
+                <canvas id="trendsChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recommendations / Alerts -->
+        <div class="dashboard-card recs-card">
+            <div class="recs-title">
+                System Alerts & Recommendations
+                <button class="action-small-btn" onclick="exportDashboardPDF()">Export Report</button>
+            </div>
+            <div class="recommendations-list" id="recommendations-list">
+                <!-- Items will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Machine Control Modal -->
+    <div id="controlModal" class="control-modal" style="display:none;">
+        <div class="control-modal-content">
+            <span class="close" onclick="closeControlModal()">&times;</span>
+            <div class="control-modal-title" id="control-modal-title">Control Machine</div>
+            <div class="control-actions">
+                <button onclick="sendControlAction('reduce_power')">Reduce Power</button>
+                <button onclick="sendControlAction('shut_down')">Shut Down</button>
+                <button onclick="sendControlAction('reset_alarm')">Reset Alarm</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>

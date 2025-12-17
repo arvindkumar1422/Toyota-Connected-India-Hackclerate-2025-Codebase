@@ -1,0 +1,20 @@
+<!-- index.html: Login Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVTwin Login</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <div class="header"><span class="logo" aria-label="Toyota Logo"></span>EVTwin - Login</div>
+    <div style="max-width:400px;margin:3rem auto;padding:2rem;background:#fff;border-radius:12px;box-shadow:0 2px 12px rgba(213,0,0,0.08);">
+        <h2>Sign In</h2>
+        <div id="firebaseui-auth-container"></div>
+        <button onclick="loginWithGoogle()">Login with Google</button>
+    </div>
+    <script type="module" src="/static/js/firebase-config.js"></script>
+    <script type="module" src="/static/js/firebase.js"></script>
+</body>
+</html> 

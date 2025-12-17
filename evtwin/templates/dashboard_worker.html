@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EVTwin Dashboard - Worker</title>
+    <link rel="stylesheet" href="/static/css/dashboard.css">
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="role-selector"><b>Role:</b> Shop Floor Worker</div>
+        <div class="command-bar">
+            <button id="mic-btn" onclick="startVoiceCommand()">🎤</button>
+            <input id="text-command" type="text" placeholder="Type a command..." onkeydown="if(event.key==='Enter'){handleTextCommand();}">
+            <span id="voice-status"></span>
+        </div>
+    </div>
+    {% include 'dashboard.html' %}
+    <script>
+    // Hide shutdown and control controls for worker
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.icon-btn[title="Shutdown"], .icon-btn[title="Control"]').forEach(btn => btn.style.display = 'none');
+    });
+    </script>
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html> 
