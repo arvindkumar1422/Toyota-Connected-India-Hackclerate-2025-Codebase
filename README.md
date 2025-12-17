@@ -19,7 +19,7 @@ EVTwin is a real-time digital twin application designed for industrial monitorin
 
 ```mermaid
 graph TD
-    User[User (Head/Lead/Worker)] -->|Access| WebUI[Web Dashboard (HTML/JS)]
+    User["User (Head/Lead/Worker)"] -->|Access| WebUI["Web Dashboard (HTML/JS)"]
     WebUI -->|Auth| Firebase[Firebase Auth]
     WebUI -->|Real-time Data| SocketIO[Flask-SocketIO]
     
@@ -142,8 +142,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Note:** This codebase was developed under tight time constraints for the Toyota Connected India Hackclerate 2025. Some implementations may be simplified or require further refinement for production use.
-- The dashboard is fully responsive. Test on Chrome DevTools (toggle device toolbar) or real devices.
-
-## Audit Logging
-- All login/logout and critical actions are logged in the backend (see future `audit.log`). 
+**Note:** This codebase was developed under tight time constraints for the Toyota Connected India Hackclerate 2025. Some implementations may be simplified or require further refinement for production use. 
